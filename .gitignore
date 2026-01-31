@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude-code-context.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+data/*.pdf
+*.log
+.aws/
+
+# Testing
+.pytest_cache/
