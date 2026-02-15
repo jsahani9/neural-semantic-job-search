@@ -58,7 +58,17 @@ Resume (PDF)
 6. **Ranked Output** - Returns top N matches sorted by score
 
 ---
+## Engineering Highlights
 
+- Modular service-oriented architecture (API / LLM / services layers)
+- Deterministic + LLM hybrid ranking pipeline
+- Seniority-aware role filtering
+- Cost-controlled Top-K LLM scoring
+- Structured prompt outputs for reliable parsing
+- Dockerized multi-service deployment
+- Real-world API integration (Adzuna + AWS Bedrock)
+- Human-readable match explanations
+---
 ## Tech Stack
 
 | Layer | Technology |
@@ -313,4 +323,5 @@ The `limit` parameter in the API controls how many jobs are scored by the LLM, g
 ## License
 
 MIT
+
 
