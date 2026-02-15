@@ -1,6 +1,3 @@
-"""
-Bedrock client for Llama 3.3 70B text generation
-"""
 import os
 import json
 import boto3
@@ -11,32 +8,37 @@ load_dotenv()
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 MODEL_ID = os.getenv("BEDROCK_MODEL_ID")
 
-
-def generate(prompt: str) -> str:
+def main():
     if not MODEL_ID:
         raise RuntimeError("BEDROCK_MODEL_ID is missing in .env")
 
     client = boto3.client("bedrock-runtime", region_name=AWS_REGION)
 
+    prompt = "Write one short line explaining semantic search in simple words."
+
     body = {
         "prompt": prompt,
-        "max_gen_len": 600,
+        "max_gen_len": 120,
         "temperature": 0.2,
         "top_p": 0.9,
     }
 
-    response = client.invoke_model(
+    resp = client.invoke_model(
         modelId=MODEL_ID,
         body=json.dumps(body),
         accept="application/json",
         contentType="application/json",
     )
 
-    data = json.loads(response["body"].read())
+    data = json.loads(resp["body"].read())
+    print("RAW RESPONSE:", data)
 
     if "generation" in data:
-        return data["generation"].strip()
-    if "generations" in data and data["generations"]:
-        return str(data["generations"][0].get("text", "")).strip()
+        print("\nMODEL OUTPUT:\n", data["generation"])
+    elif "generations" in data and data["generations"]:
+        print("\nMODEL OUTPUT:\n", data["generations"][0].get("text"))
+    else:
+        print("\nCould not find text field, inspect RAW RESPONSE above.")
 
-    raise RuntimeError(f"Unexpected Bedrock response format: {data}")
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,23 @@
+# FastAPI & Server
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+python-multipart==0.0.9
+
+# AWS & LLM
+boto3==1.35.0
+botocore==1.35.0
+
+# Data Processing
+pymupdf==1.25.1
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# HTTP Client
+httpx==0.28.1
+
+# Environment
+python-dotenv==1.0.1
+
+# Streamlit UI
+streamlit==1.31.0
+requests==2.31.0
