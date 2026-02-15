@@ -4,9 +4,6 @@ Bedrock client for Llama 3.3 70B text generation
 import os
 import json
 import boto3
-from dotenv import load_dotenv
-
-load_dotenv()
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 MODEL_ID = os.getenv("BEDROCK_MODEL_ID")
@@ -14,7 +11,7 @@ MODEL_ID = os.getenv("BEDROCK_MODEL_ID")
 
 def generate(prompt: str) -> str:
     if not MODEL_ID:
-        raise RuntimeError("BEDROCK_MODEL_ID is missing in .env")
+        raise RuntimeError("BEDROCK_MODEL_ID is missing")
 
     client = boto3.client("bedrock-runtime", region_name=AWS_REGION)
 
