@@ -2,6 +2,20 @@
 
 A neural-semantic job matching system that uses **Meta Llama 3.3 70B Instruct** (via AWS Bedrock) to intelligently match your resume against real Canadian job postings from the **Adzuna API**. Upload a PDF resume, get AI-powered profile analysis, and receive ranked job matches with explainability scores.
 
+## Why This Project Exists
+
+Most job platforms rely on keyword matching, which fails to capture real candidate intent, transferable skills, and career trajectory.
+
+This project explores how large language models can be used as **semantic reasoning engines** to:
+
+- Understand resumes beyond surface keywords  
+- Infer implicit skills and experience  
+- Evaluate role fit holistically  
+- Provide explainable ranking decisions  
+
+The goal was to build a realistic applied GenAI system that mirrors how modern AI-powered recruitment tools could be architected in production.
+
+
 ---
 
 ## How It Works
@@ -299,3 +313,4 @@ The `limit` parameter in the API controls how many jobs are scored by the LLM, g
 ## License
 
 MIT
+
