@@ -1,173 +1,301 @@
-🧠 Neural Semantic Job Search Engine
+# Neural Semantic Job Search Engine
 
-An end-to-end Generative AI system that matches resumes to live job postings using semantic search, LLM reasoning, and explainable ranking.
+A neural-semantic job matching system that uses **Meta Llama 3.3 70B Instruct** (via AWS Bedrock) to intelligently match your resume against real Canadian job postings from the **Adzuna API**. Upload a PDF resume, get AI-powered profile analysis, and receive ranked job matches with explainability scores.
 
-Built to demonstrate applied AI engineering skills: document parsing, embeddings, LLM scoring, API orchestration, and production-ready architecture.
+---
 
-🚀 Features
+## How It Works
 
-Resume PDF upload + profile extraction
+```
+Resume (PDF)
+    │
+    ▼
+┌──────────────────┐
+│  Resume Parser   │  ← PyMuPDF text extraction
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│ Profile Analyzer │  ← Llama 3.3 70B analyzes skills, gaps, roadmap
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  Adzuna API      │  ← Fetches real Canadian job postings
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  Job Matcher     │  ← Llama 3.3 70B scores each job 0-100
+└────────┬─────────┘
+         │
+         ▼
+   Ranked Results
+   (with explanations)
+```
 
-Live job ingestion via Adzuna API
+### Neural-Semantic Matching Protocol
 
-Semantic job matching using embeddings
+1. **Profile Intelligence** - Extract text from resume PDF using PyMuPDF
+2. **Semantic Understanding** - Llama 3.3 70B analyzes skills, experience, target roles, skill gaps, and generates a 4-week learning roadmap
+3. **Job Aggregation** - Fetch relevant Canadian job postings via Adzuna API
+4. **Neural Matching** - Llama scores each job (0-100) with human-readable explanations
+5. **Smart Filtering** - Automatically caps senior-level roles (by title keywords and years-of-experience requirements)
+6. **Ranked Output** - Returns top N matches sorted by score
 
-LLM-based job scoring + reasoning (AWS Bedrock – Llama 3.3 70B)
+---
 
-Seniority-aware ranking (filters Manager / Senior roles)
+## Tech Stack
 
-Explainable match results
+| Layer | Technology |
+|-------|-----------|
+| **LLM** | Meta Llama 3.3 70B Instruct (AWS Bedrock) |
+| **Backend API** | FastAPI |
+| **Frontend UI** | Streamlit |
+| **Job Data** | Adzuna API (Canadian market) |
+| **Resume Parsing** | PyMuPDF |
+| **HTTP Client** | httpx |
+| **Deployment** | Docker + Docker Compose |
 
-Streamlit frontend + FastAPI backend
+---
 
-Fully Dockerized (frontend + API)
+## Project Structure
 
-Structured profile analysis (skills, summary, experience)
+```
+neural-semantic-job-search/
+├── src/
+│   ├── api/
+│   │   └── main.py              # FastAPI endpoints (/health, /match)
+│   ├── llm/
+│   │   ├── bedrock_client.py    # AWS Bedrock Llama 3.3 70B wrapper
+│   │   ├── profile_analyzer.py  # Resume → structured profile analysis
+│   │   └── job_matcher.py       # Semantic job scoring & ranking
+│   └── services/
+│       ├── resume_parser.py     # PDF text extraction (PyMuPDF)
+│       └── adzuna_client.py     # Adzuna job search API client
+├── app/
+│   └── streamlit_app.py         # Streamlit web UI
+├── docker/
+│   ├── Dockerfile.api           # FastAPI container
+│   ├── Dockerfile.streamlit     # Streamlit container
+│   └── docker-compose.yml       # Multi-container orchestration
+├── requirements.txt
+├── .env                         # API keys (not committed)
+└── README.md
+```
 
-Cost-controlled LLM scoring (Top-K reranking)
+---
 
-🏗 Architecture
-Resume PDF
-   ↓
-Profile Analyzer (LLM)
-   ↓
-Job Ingestion (Adzuna API)
-   ↓
-Pre-filtering + Heuristics
-   ↓
-LLM Job Scoring (Bedrock)
-   ↓
-Ranked Matches + Explanations
-   ↓
-Streamlit UI
+## Prerequisites
 
-Stack
+- **Python 3.12+**
+- **AWS Account** with Bedrock access to `meta.llama3-3-70b-instruct-v1:0`
+- **AWS CLI** configured (`aws configure`)
+- **Adzuna API** credentials ([sign up here](https://developer.adzuna.com/))
+- **Docker** (optional, for containerized deployment)
 
-Backend
+---
 
-Python
+## Setup
 
-FastAPI
+### 1. Clone the Repository
 
-AWS Bedrock (Meta Llama 3.3 70B)
+```bash
+git clone https://github.com/<your-username>/neural-semantic-job-search.git
+cd neural-semantic-job-search
+```
 
-Adzuna Jobs API
+### 2. Create Virtual Environment
 
-Frontend
+```bash
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+# venv\Scripts\activate   # Windows
+```
 
-Streamlit
+### 3. Install Dependencies
 
-Infra
+```bash
+pip install -r requirements.txt
+```
 
-Docker / Docker Compose
+### 4. Configure Environment Variables
 
-🧩 Matching Pipeline
+Create a `.env` file in the project root:
 
-Resume PDF → structured profile (summary + skills)
-
-Fetch live jobs from Adzuna
-
-Pre-filter based on:
-
-Role seniority
-
-Title keywords
-
-LLM evaluates Top-K jobs using rubric:
-
-Skill match
-
-Role alignment
-
-Level fit
-
-Jobs returned with:
-
-Score (0–100)
-
-Explanation
-
-Missing skills
-
-This hybrid approach combines deterministic filtering with LLM reasoning for high-quality ranking.
-
-📦 Running Locally
-Prerequisites
-
-Docker
-
-AWS credentials with Bedrock access
-
-Environment Variables
-
-Create .env:
-
-AWS_ACCESS_KEY_ID=...
-AWS_SECRET_ACCESS_KEY=...
+```env
+# AWS Bedrock
 AWS_REGION=us-east-1
+BEDROCK_MODEL_ID=meta.llama3-3-70b-instruct-v1:0
 
-ADZUNA_APP_ID=...
-ADZUNA_API_KEY=...
+# Adzuna API
+ADZUNA_APP_ID=your_app_id_here
+ADZUNA_APP_KEY=your_app_key_here
+```
 
-Start Services
-docker compose up --build
+### 5. Configure AWS Credentials
 
+Make sure your AWS CLI is configured with access to Bedrock:
 
-Then open:
+```bash
+aws configure
+# Enter your AWS Access Key, Secret Key, and Region
+```
 
-Frontend:
+Verify Bedrock access:
 
-http://localhost:8501
+```bash
+aws bedrock list-foundation-models --region us-east-1 --query "modelSummaries[?modelId=='meta.llama3-3-70b-instruct-v1:0'].modelId"
+```
 
+---
 
-Backend health:
+## Running Locally
 
-http://localhost:8000/health
+### Start the FastAPI Backend
 
-📊 Example Output
+```bash
+uvicorn src.api.main:app --reload --port 8000
+```
 
-Ranked job matches
+API will be available at:
+- Swagger docs: http://localhost:8000/docs
+- Health check: http://localhost:8000/health
 
-LLM-generated explanations
+### Start the Streamlit Frontend
 
-Resume profile preview
+In a **separate terminal**:
 
-Skill alignment feedback
+```bash
+streamlit run app/streamlit_app.py
+```
 
-🎯 Why This Project Matters
+UI will be available at: http://localhost:8501
 
-This project demonstrates:
+---
 
-Real-world GenAI integration
+## Running with Docker
 
-LLM orchestration with APIs
+### 1. Create `.env` File
 
-Prompt engineering + scoring rubrics
+Make sure your `.env` file exists in the project root (see setup step 4).
 
-Production-ready containerization
+### 2. Build and Run
 
-Applied ML system design
+```bash
+docker compose -f docker/docker-compose.yml up --build
+```
 
-Explainable AI outputs
+This starts two containers:
 
-Built to reflect how modern AI systems are deployed in industry.
+| Service | Port | URL |
+|---------|------|-----|
+| FastAPI Backend | 8000 | http://localhost:8000/docs |
+| Streamlit Frontend | 8501 | http://localhost:8501 |
 
-🛠 Future Improvements
+### 3. Stop Containers
 
-Embedding-based retrieval layer (vector DB)
+```bash
+docker compose -f docker/docker-compose.yml down
+```
 
-Evaluation metrics (MRR / Recall@K)
+> **Note:** The Docker setup mounts your local `~/.aws` credentials into the API container (read-only) for Bedrock access.
 
-Resume tailoring assistant
+---
 
-Job clustering / deduplication
+## API Reference
 
-Feedback loop for ranking refinement
+### `GET /health`
 
-👤 Author
+Health check endpoint.
 
-Jasveen Singh Sahani
-Junior AI / Applied ML Engineer
+**Response:**
+```json
+{
+  "status": "ok"
+}
+```
 
-LinkedIn: <your link>
-GitHub: <your repo>
+### `POST /match`
+
+Upload a resume PDF and get ranked job matches.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `resume` | file | required | PDF resume file |
+| `keywords` | string | `"software engineer"` | Job search keywords |
+| `location` | string | `"Canada"` | Job location filter |
+| `max_results` | int | `20` | Max jobs to fetch from Adzuna |
+| `top_n` | int | `10` | Number of top matches to return |
+| `limit` | int | `20` | Max jobs to score with LLM (cost control) |
+
+**Example using curl:**
+
+```bash
+curl -X POST "http://localhost:8000/match?keywords=python+developer&location=Toronto&top_n=5&limit=5" \
+  -F "resume=@/path/to/your/resume.pdf"
+```
+
+**Response:**
+```json
+{
+  "keywords_used": "python developer",
+  "location": "Toronto",
+  "jobs_fetched": 20,
+  "top_n": 5,
+  "matches": [
+    {
+      "title": "Junior Python Developer",
+      "company": "TechCorp",
+      "location": "Toronto, Ontario",
+      "description": "We are looking for a junior developer...",
+      "match_score": 82,
+      "match_reason": "Strong alignment with Python skills and entry-level requirements."
+    }
+  ],
+  "profile_preview": "SUMMARY:\nComputer Science graduate with..."
+}
+```
+
+---
+
+## Key Features
+
+- **Semantic Matching** - Goes beyond keyword matching; Llama 3.3 70B understands context, implicit skills, and career trajectory
+- **Senior Role Filtering** - Automatically detects and caps scores for senior-level roles (by title keywords like "Senior", "Lead", "Principal" and by years-of-experience requirements in descriptions)
+- **Profile Analysis** - Generates professional summary, identifies skill gaps, suggests target roles, and creates a 4-week learning roadmap
+- **Cost Optimized** - Llama 3.3 70B costs ~$0.00072/1K tokens (~$1 total project cost vs $7+ with Claude). Configurable `limit` parameter to control how many jobs get scored
+- **Real Job Data** - Live job postings from Adzuna API (Canadian market)
+- **Explainable Results** - Every match includes a human-readable reason explaining the score
+
+---
+
+## Cost Breakdown
+
+| Model | Cost per 1K Tokens | Estimated Total |
+|-------|-------------------|-----------------|
+| Llama 3.3 70B (Bedrock) | $0.00072 | ~$1 |
+| Claude 3.5 Sonnet | $0.003 | ~$7+ |
+| GPT-4 | $0.03 | ~$30+ |
+
+The `limit` parameter in the API controls how many jobs are scored by the LLM, giving you direct cost control.
+
+---
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `AWS_REGION` | Yes | AWS region for Bedrock (default: `us-east-1`) |
+| `BEDROCK_MODEL_ID` | Yes | Bedrock model ID (`meta.llama3-3-70b-instruct-v1:0`) |
+| `ADZUNA_APP_ID` | Yes | Adzuna API application ID |
+| `ADZUNA_APP_KEY` | Yes | Adzuna API application key |
+| `BACKEND_URL` | No | Backend URL for Streamlit (default: `http://127.0.0.1:8000`) |
+
+---
+
+## License
+
+MIT
