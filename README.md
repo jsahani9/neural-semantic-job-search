@@ -319,9 +319,34 @@ The `limit` parameter in the API controls how many jobs are scored by the LLM, g
 | `BACKEND_URL` | No | Backend URL for Streamlit (default: `http://127.0.0.1:8000`) |
 
 ---
+## Resume Value
 
+This project demonstrates:
+
+- End-to-end GenAI system design
+- LLM orchestration in production workflows
+- API-driven architecture
+- Docker-based deployment
+- Prompt engineering for structured outputs
+- Real-world data integration
+- Explainable AI ranking systems
+
+Built as a portfolio project for Junior AI / Applied ML / GenAI Engineer roles.
+---
+
+## 👤 Author
+
+**Jasveen Singh Sahani**  
+Junior AI / Applied ML / Generative AI Engineer  
+
+🔗 LinkedIn: https://www.linkedin.com/in/jasveen-singh-sahani-92716b249/
+💻 GitHub: https://github.com/jsahani9  
+
+Open to new grad / junior AI & GenAI engineering opportunities (Canada).
+---
 ## License
 
 MIT
+
 
 
